@@ -16,6 +16,9 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.topology.TopologyBuilder;
+import org.luismesalas.storm.bolt.LangIdentifier;
+import org.luismesalas.storm.bolt.StatsToFile;
+import org.luismesalas.storm.bolt.TextTokenizer;
 import org.luismesalas.storm.spout.FolderWatcher;
 
 public class StormTopologyLocal {
@@ -31,7 +34,7 @@ public class StormTopologyLocal {
 	    Namespace parsedArguments = argParser.parseArgs(args);
 	    Config conf = new Config();
 
-	    String configFileParam = parsedArguments.getString("config_file");
+	    String configFileParam = parsedArguments.getString("configuration");
 	    String inputPathParam = parsedArguments.getString("input");
 	    String outputPathParam = parsedArguments.getString("output");
 	    Integer limitParam = parsedArguments.getInt("limit");
@@ -51,6 +54,9 @@ public class StormTopologyLocal {
 
 	    TopologyBuilder builder = new TopologyBuilder();
 	    builder.setSpout("folder-watcher", new FolderWatcher());
+	    builder.setBolt("lang-identifier", new LangIdentifier()).shuffleGrouping("folder-watcher");
+	    builder.setBolt("text-tokenizer", new TextTokenizer()).shuffleGrouping("lang-identifier");
+	    builder.setBolt("stats-to-file", new StatsToFile()).shuffleGrouping("text-tokenizer");
 
 	    conf.put("input", inputPathParam);
 	    conf.put("output", outputPathParam);
@@ -79,7 +85,7 @@ public class StormTopologyLocal {
 	ArgumentParser argParser = ArgumentParsers.newArgumentParser("storm-example.jar").description(
 		"This topology is an example that reads a folder and classify all the files inside this folder by language.");
 
-	argParser.addArgument("-cf", "--config-file").required(true).help("Storm topology and global configuration file.\n");
+	argParser.addArgument("-c", "--configuration").required(true).help("Storm topology and global configuration file.\n");
 	argParser.addArgument("-i", "--input").required(false).setDefault(DEFAULT_INPUT)
 		.help("Input folder to process. Default: " + DEFAULT_INPUT + "\n");
 	argParser.addArgument("-o", "--ouput").required(false).setDefault(DEFAULT_OUTPUT)

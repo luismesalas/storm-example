@@ -29,11 +29,11 @@ public class LangIdentifier extends BaseRichBolt {
     public void prepare(@SuppressWarnings("rawtypes") Map conf, TopologyContext context, OutputCollector collector) {
 	try {
 	    _collector = collector;
-	    DetectorFactory.loadProfile(conf.get("lang_profiles_path").toString());
+	    DetectorFactory.loadProfile(conf.get("lang_profiles").toString());
 	    DetectorFactory.setSeed(0);
-	    limit = Double.parseDouble(conf.get("lang_profiles_path").toString());
+	    limit = Double.parseDouble(conf.get("limit").toString());
 	} catch (LangDetectException e) {
-	    logger.severe("Error on inicialization on LangIdentifier bolt");
+	    logger.severe("Error on inicialization on LangIdentifier bolt: " + e.getMessage());
 	    e.printStackTrace();
 	}
     }
