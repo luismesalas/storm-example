@@ -55,7 +55,7 @@ public class StormTopologyLocal {
 	    conf.put("input", inputPathParam);
 	    conf.put("output", outputPathParam);
 	    conf.put("limit", new Double(limitParam / 100));
-	    conf.setDebug(false);
+	    conf.setDebug(true);
 
 	    conf.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, Integer.valueOf(topologyProperties.getProperty("spouts")));
 	    conf.put(Config.TOPOLOGY_WORKERS, Integer.valueOf(topologyProperties.getProperty("workers")));
@@ -79,7 +79,7 @@ public class StormTopologyLocal {
 	ArgumentParser argParser = ArgumentParsers.newArgumentParser("storm-example.jar").description(
 		"This topology is an example that reads a folder and classify all the files inside this folder by language.");
 
-	argParser.addArgument("-cf", "--config-file").required(true).help("Storm topology configuration file.\n");
+	argParser.addArgument("-cf", "--config-file").required(true).help("Storm topology and global configuration file.\n");
 	argParser.addArgument("-i", "--input").required(false).setDefault(DEFAULT_INPUT)
 		.help("Input folder to process. Default: " + DEFAULT_INPUT + "\n");
 	argParser.addArgument("-o", "--ouput").required(false).setDefault(DEFAULT_OUTPUT)

@@ -80,7 +80,7 @@ public class StormTopology {
 	ArgumentParser argParser = ArgumentParsers.newArgumentParser("storm-example.jar").description(
 		"This topology is an example that reads a folder and classify all the files inside this folder by language.");
 
-	argParser.addArgument("-cf", "--config-file").required(true).help("Storm topology configuration file.\n");
+	argParser.addArgument("-cf", "--config-file").required(true).help("Storm topology and global configuration file.\n");
 	argParser.addArgument("-i", "--input").required(false).setDefault(DEFAULT_INPUT)
 		.help("Input folder to process. Default: " + DEFAULT_INPUT + "\n");
 	argParser.addArgument("-o", "--ouput").required(false).setDefault(DEFAULT_OUTPUT)
