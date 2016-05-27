@@ -89,7 +89,7 @@ public class StormTopology {
 	argParser.addArgument("-c", "--configuration").required(true).help("Storm topology and global configuration file.\n");
 	argParser.addArgument("-i", "--input").required(false).setDefault(DEFAULT_INPUT)
 		.help("Input folder to process. Default: " + DEFAULT_INPUT + "\n");
-	argParser.addArgument("-o", "--ouput").required(false).setDefault(DEFAULT_OUTPUT)
+	argParser.addArgument("-o", "--output").required(false).setDefault(DEFAULT_OUTPUT)
 		.help("Output folder to store the process result. Default: " + DEFAULT_OUTPUT + "\n");
 	argParser.addArgument("-l", "--limit").type(Integer.class).required(false).setDefault(DEFAULT_PROB)
 		.help("Language probability limit. Allowed value: a positive integer between 0 and 100. Default: " + DEFAULT_PROB + ".\n");

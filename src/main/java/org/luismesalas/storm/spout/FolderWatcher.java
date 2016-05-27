@@ -45,11 +45,10 @@ public class FolderWatcher extends BaseRichSpout {
 	_collector = collector;
 	try {
 	    _watcher = FileSystems.getDefault().newWatchService();
-	    _inputPath = conf.get("inputPath").toString();
-	    _outputPath = conf.get("outputPath").toString();
+	    _inputPath = conf.get("input").toString();
+	    _outputPath = conf.get("output").toString();
 	    _currentFile = null;
 
-	    _outputPath = conf.get("outputPath").toString();
 	    File outputFolder = new File(_outputPath);
 	    if (!outputFolder.exists()) {
 		outputFolder.mkdirs();

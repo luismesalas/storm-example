@@ -35,8 +35,8 @@ public class StatsToFile extends BaseRichBolt {
     public void prepare(@SuppressWarnings("rawtypes") Map conf, TopologyContext context, OutputCollector collector) {
 	try {
 	    _collector = collector;
-	    _inputPath = conf.get("inputPath").toString();
-	    _outputPath = conf.get("outputPath").toString();
+	    _inputPath = conf.get("input").toString();
+	    _outputPath = conf.get("output").toString();
 	    _limit = Double.parseDouble(conf.get("limit").toString());
 	} catch (Exception e) {
 	    logger.severe("Error on inicialization on StatsToFile bolt: " + e.getMessage());
