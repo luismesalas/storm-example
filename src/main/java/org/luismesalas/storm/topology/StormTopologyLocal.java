@@ -22,7 +22,7 @@ import org.luismesalas.storm.bolt.TextTokenizer;
 import org.luismesalas.storm.spout.FolderWatcher;
 
 public class StormTopologyLocal {
-    private static final int DEFAULT_PROB = 60;
+    private static final int DEFAULT_PROB = 70;
     private static final String DEFAULT_OUTPUT = "/mm_disk/output";
     private static final String DEFAULT_INPUT = "/mm_disk/input";
     final static Logger logger = Logger.getLogger(StormTopologyLocal.class.getName());
@@ -60,7 +60,7 @@ public class StormTopologyLocal {
 
 	    conf.put("input", inputPathParam);
 	    conf.put("output", outputPathParam);
-	    conf.put("limit", new Double(limitParam / 100));
+	    conf.put("limit", new Double(new Double(limitParam) / 100));
 	    conf.setDebug(true);
 
 	    conf.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, Integer.valueOf(topologyProperties.getProperty("spouts")));

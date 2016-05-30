@@ -32,7 +32,6 @@ public class LangIdentifier extends BaseRichBolt {
 	try {
 	    _collector = collector;
 	    DetectorFactory.loadProfile(conf.get("lang_profiles").toString());
-	    DetectorFactory.setSeed(0);
 	    limit = Double.parseDouble(conf.get("limit").toString());
 	} catch (LangDetectException e) {
 	    logger.severe("Error on inicialization on LangIdentifier bolt: " + e.getMessage());
@@ -54,21 +53,20 @@ public class LangIdentifier extends BaseRichBolt {
 	    ArrayList<Language> languages = detector.getProbabilities();
 	    List<LanguageSerializable> languagesList = new ArrayList<LanguageSerializable>();
 
-	    if (languages != null) {
-		if (languages.size() > 0 && languages.get(0).prob >= limit) {
+	    if (languages != null && languages.size() > 0) {
+		for (Language language : languages) {
+		    languagesList.add(new LanguageSerializable(language.lang, language.prob));
+		}
+
+		if (languages.get(0).prob >= limit) {
 		    logger.info("Language " + languages.get(0).lang + " identified for file " + filepath + " with a probability of "
 			    + languages.get(0).prob);
-		    for (Language language : languages) {
-			languagesList.add(new LanguageSerializable(language.lang, language.prob));
-		    }
-		    _collector.emit(input, new Values(content, filepath, languagesList));
-		    _collector.ack(input);
 		} else {
 		    logger.info("Could not identify language for file: " + filepath + ". Ambiguous file.");
-		    _collector.emit(input, new Values(content, filepath, languagesList));
-		    _collector.ack(input);
-
 		}
+
+		_collector.emit(input, new Values(content, filepath, languagesList));
+		_collector.ack(input);
 	    } else {
 		logger.warning("Could not perform language identification on file: " + filepath);
 		_collector.fail(input);
