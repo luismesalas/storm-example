@@ -66,13 +66,14 @@ public class StormTopologyLocal {
 	    conf.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, Integer.valueOf(topologyProperties.getProperty("spouts")));
 	    conf.put(Config.TOPOLOGY_WORKERS, Integer.valueOf(topologyProperties.getProperty("workers")));
 	    conf.put(Config.TOPOLOGY_WORKER_CHILDOPTS, topologyProperties.getProperty("worker_childopts"));
+	    conf.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS, new Integer(topologyProperties.getProperty("message_timeout")));
 
 	    try {
 		LocalCluster cluster = new LocalCluster();
 		String topologyName = "StormTopology-" + new Date().getTime();
 		cluster.submitTopology(topologyName, conf, builder.createTopology());
 	    } catch (Exception e) {
-		logger.severe("Topology already alive!");
+		logger.severe("Error deploying topology");
 	    }
 	} catch (ArgumentParserException | IOException e) {
 	    logger.severe(e.getMessage());

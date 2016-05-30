@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -15,9 +16,8 @@ import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Tuple;
+import org.luismesalas.storm.model.LanguageSerializable;
 import org.luismesalas.storm.util.GeneralUtils;
-
-import com.cybozu.labs.langdetect.Language;
 
 public class StatsToFile extends BaseRichBolt {
 
@@ -55,7 +55,7 @@ public class StatsToFile extends BaseRichBolt {
 	Object tokensFrequencyObj = input.getValue(3);
 
 	try {
-	    ArrayList<Language> languages = (ArrayList<Language>) langarrayObj;
+	    List<LanguageSerializable> languages = (ArrayList<LanguageSerializable>) langarrayObj;
 	    Map<String, Integer> tokensFrequency = (HashMap<String, Integer>) tokensFrequencyObj;
 
 	    logger.info("Generating language stats for file: " + filepath);
@@ -64,8 +64,8 @@ public class StatsToFile extends BaseRichBolt {
 	    String fequencyInfo = getOrderedTokensFrequencySummary(tokensFrequency);
 
 	    String langSubfolder = "ambiguous";
-	    if (languages.get(0).prob >= _limit) {
-		langSubfolder = languages.get(0).lang;
+	    if (languages.get(0).getProb() >= _limit) {
+		langSubfolder = languages.get(0).getLang();
 	    }
 
 	    String outputSubFolderPath = _outputPath + File.separator + langSubfolder;
@@ -114,11 +114,11 @@ public class StatsToFile extends BaseRichBolt {
 	return result;
     }
 
-    private String getLanguageSummary(ArrayList<Language> languages) {
+    private String getLanguageSummary(List<LanguageSerializable> languages) {
 	String result = "Language probability stats\n\n";
 
 	for (int i = 0; (i < languages.size() && i < NUM_LANGUAGES_TOSHOW); i++) {
-	    result += languages.get(i).lang + ": " + languages.get(i).prob + "\n";
+	    result += languages.get(i).getLang() + ": " + languages.get(i).getProb() + "\n";
 	}
 
 	return result;

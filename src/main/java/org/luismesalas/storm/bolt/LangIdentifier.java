@@ -1,6 +1,7 @@
 package org.luismesalas.storm.bolt;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -11,6 +12,7 @@ import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
+import org.luismesalas.storm.model.LanguageSerializable;
 
 import com.cybozu.labs.langdetect.Detector;
 import com.cybozu.labs.langdetect.DetectorFactory;
@@ -50,16 +52,20 @@ public class LangIdentifier extends BaseRichBolt {
 	    detector.append(content);
 	    detector.detect();
 	    ArrayList<Language> languages = detector.getProbabilities();
+	    List<LanguageSerializable> languagesList = new ArrayList<LanguageSerializable>();
 
 	    if (languages != null) {
 		if (languages.size() > 0 && languages.get(0).prob >= limit) {
 		    logger.info("Language " + languages.get(0).lang + " identified for file " + filepath + " with a probability of "
 			    + languages.get(0).prob);
-		    _collector.emit(input, new Values(content, filepath, languages));
+		    for (Language language : languages) {
+			languagesList.add(new LanguageSerializable(language.lang, language.prob));
+		    }
+		    _collector.emit(input, new Values(content, filepath, languagesList));
 		    _collector.ack(input);
 		} else {
 		    logger.info("Could not identify language for file: " + filepath + ". Ambiguous file.");
-		    _collector.emit(input, new Values(content, filepath, languages));
+		    _collector.emit(input, new Values(content, filepath, languagesList));
 		    _collector.ack(input);
 
 		}

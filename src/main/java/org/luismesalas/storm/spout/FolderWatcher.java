@@ -36,7 +36,6 @@ public class FolderWatcher extends BaseRichSpout {
     WatchService _watcher;
     String _inputPath;
     String _outputPath;
-    File _currentFile;
 
     Queue<File> _fqueue = new LinkedList<File>();
 
@@ -47,7 +46,6 @@ public class FolderWatcher extends BaseRichSpout {
 	    _watcher = FileSystems.getDefault().newWatchService();
 	    _inputPath = conf.get("input").toString();
 	    _outputPath = conf.get("output").toString();
-	    _currentFile = null;
 
 	    File outputFolder = new File(_outputPath);
 	    if (!outputFolder.exists()) {
@@ -142,7 +140,6 @@ public class FolderWatcher extends BaseRichSpout {
 			}
 		    }
 		} else {
-		    _currentFile = currentFile;
 		    _collector.emit(new Values(fileContent, currentFile.getAbsolutePath()), currentFile.getAbsolutePath());
 		}
 	    } else {
